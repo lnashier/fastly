@@ -1,0 +1,15 @@
+{
+  "server": {
+    "app": {
+      "port": 8080,
+      "shutdown": {
+        "gracetime": 1
+      }
+    }
+  },
+  "store": {
+    "addresses": [
+      "127.0.0.1:11211"
+    ]
+  }
+}

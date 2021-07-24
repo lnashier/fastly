@@ -3,6 +3,7 @@ package boot
 import (
 	"fmt"
 	"github.com/fastly/internal/server"
+	"github.com/spf13/viper"
 	"os"
 	"os/signal"
 	"syscall"
@@ -10,11 +11,11 @@ import (
 
 // Up is to bootup server
 // It is a blocking function
-func Up() {
+func Up(cfg *viper.Viper) {
 	fmt.Println("boot@Up enter")
 	defer fmt.Println("boot@Up exit")
 
-	srv := server.New()
+	srv := server.New(cfg)
 
 	go func(srv *server.Server) {
 		// Logging: Info Level

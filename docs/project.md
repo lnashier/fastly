@@ -23,10 +23,10 @@ and retrieve the objects.
 - App will do simply loggin to stdout.
 - Library will not type-cast objects.
 - Library will remain agnostic to data-type of payload.
-  - Library takes slice/array of bytes and returns slice/array of bytes.
+    - Library takes slice/array of bytes and returns slice/array of bytes.
 - Library will not set expiration time means the stored items have no expiration time.
 - Library will only perform basic sanity checks as specified in the requirements:
-  - Payload size limit (0 - 50 MB]
+    - Payload size limit (0 - 50 MB]
 
 ## Deliverables
 
@@ -47,13 +47,18 @@ There are two deliverables for this project:
 - [ ] Library should chunk the file in any way appropriate.
 - [ ] Library should key the chunks in any way appropriate.
 - [ ] Library must check for file consistency to ensure the data retrieved is the same as the original data stored.
-- [ ] Library must handle edge cases appropriately by raising an Exception or similar. Some examples of edge cases may include storing a file that already exists, trying to retrieve a file that does not exist, or when a file retrieved is inconsistent/corrupt.
+- [ ] Library must handle edge cases appropriately by raising an Exception or similar. Some examples of edge cases may
+  include storing a file that already exists, trying to retrieve a file that does not exist, or when a file retrieved is
+  inconsistent/corrupt.
 - [x] Library must have at least one test.
 
 ### API
 
 - [ ] Application should be a REST API.
-- [ ] Application must accept a POST request with file contents in the payload and store it using the library. It may be convenient to return an identifier used for retrieval at a later time.
-- [ ] Application must accept a GET request with a file name/identifier and retrieve it using the library. The file contents must be returned in the response.
-- [ ] Application should appropriately handle edge cases (return an error response) when a file does not exist or is not consistent.
+- [ ] Application must accept a POST request with file contents in the payload and store it using the library. It may be
+  convenient to return an identifier used for retrieval at a later time.
+- [ ] Application must accept a GET request with a file name/identifier and retrieve it using the library. The file
+  contents must be returned in the response.
+- [ ] Application should appropriately handle edge cases (return an error response) when a file does not exist or is not
+  consistent.
 - [ ] Application must have at least one test.

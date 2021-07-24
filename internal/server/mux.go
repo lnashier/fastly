@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/fastly/pkg/store"
 	gmux "github.com/gorilla/mux"
+	"github.com/spf13/viper"
 	"io/ioutil"
 	"net/http"
 )
@@ -11,6 +12,7 @@ import (
 // mux matches incoming client request to a list of registered handlers
 type mux struct {
 	*gmux.Router
+	cfg *viper.Viper
 }
 
 // init is to configure mux
@@ -18,9 +20,14 @@ func (m *mux) init() *mux {
 	fmt.Println("mux@init enter")
 	defer fmt.Println("mux@init exit")
 
-	// TODO: Move addresses to config
-	//st := memcached.New(memcached.WithStoreAddresses([]string{"127.0.0.1:11211"}))
 	st := store.Mock()
+	/*
+		st := memcached.New(memcached.WithStoreAddresses(
+			m.cfg.GetStringSlice("store.addresses"),
+		))
+	*/
+
+	fmt.Printf("mux@init store addresses %v\n", m.cfg.GetStringSlice("store.addresses"))
 
 	m.Methods(http.MethodPost).Path("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		payload, err := ioutil.ReadAll(r.Body)
