@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/fastly/internal/server"
 	"github.com/spf13/viper"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -40,9 +41,8 @@ func Up(cfg *viper.Viper) {
 	}(srv)
 
 	if err := srv.Start(); err != nil {
-		fmt.Printf("boot@Up server start error %s\n", err.Error())
-		os.Exit(1)
+		if err != http.ErrServerClosed {
+			fmt.Printf("boot@Up server start error %s\n", err.Error())
+		}
 	}
-
-	os.Exit(0)
 }

@@ -24,13 +24,14 @@ and retrieve the objects.
   - Delete the objects by key (optional)
 - App will use memcached with default settings.
 - App will not implement authentication and authorization.
-- App will do simply loggin to stdout.
+- App will log to stdout.
 - Library will not type-cast objects.
 - Library will remain agnostic to data-type of payload.
     - Library takes slice/array of bytes and returns slice/array of bytes.
 - Library will not set expiration time means the stored items have no expiration time.
-- Library will only perform basic sanity checks as specified in the requirements:
+- Library will perform sanity checks as specified in the requirements:
     - Payload size limit (0 - 50 MB]
+    - Data consistency
 
 ## Deliverables
 
@@ -58,11 +59,12 @@ There are two deliverables for this project:
 
 ### API
 
-- [ ] Application should be a REST API.
-- [ ] Application must accept a POST request with file contents in the payload and store it using the library. It may be
+- [x] Application should be a REST API.
+- [x] Application must accept a POST request with file contents in the payload and store it using the library. It may be
   convenient to return an identifier used for retrieval at a later time.
-- [ ] Application must accept a GET request with a file name/identifier and retrieve it using the library. The file
-  contents must be returned in the response.
-- [ ] Application should appropriately handle edge cases (return an error response) when a file does not exist or is not
-  consistent.
+- [x] Application must accept a GET request with a file name/identifier and retrieve it using the library. The file
+  contents must be returned to the caller in the response.
+- [ ] Application should appropriately handle edge cases (return an error response)
+    - [x] When a key does not exist.
+    - [ ] Content is not consistent.
 - [ ] Application must have at least one test.

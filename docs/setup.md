@@ -19,5 +19,5 @@ $ ./fastly
 ```
 $ cd $WORKSPACE/fastly
 $ make
-$ docker run -p 8080:8080 fastly:1.0.0
+$ docker run -p 8080:8080 fastly:<version>
 ```
