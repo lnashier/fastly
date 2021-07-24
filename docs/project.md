@@ -18,6 +18,10 @@ and retrieve the objects.
 
 #### Assumptions / Trade-Offs
 
+- App is single purpose. It will support the following functions:
+  - Store the objects
+  - Retrieve the objects by key
+  - Delete the objects by key (optional)
 - App will use memcached with default settings.
 - App will not implement authentication and authorization.
 - App will do simply loggin to stdout.
