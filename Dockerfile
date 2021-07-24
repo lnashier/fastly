@@ -16,7 +16,7 @@ RUN cd cmd/web \
 FROM alpine:3.14
 
 COPY --from=build /go/src/github.com/fastly/cmd/web/fastly /fastly
-COPY --from=build /go/src/github.com/fastly/configs /configs
+COPY --from=build /go/src/github.com/fastly/cmd/web/configs /configs
 
 WORKDIR /
 
