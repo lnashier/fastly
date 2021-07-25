@@ -104,7 +104,7 @@ func (s Store) Put(payload []byte) (string, error) {
 	// All chunks are stored with their own keys.
 	// Chunks-count is stored in all chunks as Flags.
 	for i, c := range chunks {
-		if err := s.c.Add(&memcache.Item{
+		if err := s.c.Set(&memcache.Item{
 			Key:   fmt.Sprintf("%s.%d", k, i),
 			Value: c,
 			Flags: chunksCount,
@@ -141,10 +141,7 @@ func (s Store) Get(k string) ([]byte, error) {
 			cobjs, err := s.c.GetMulti(cks)
 			if err != nil {
 				fmt.Printf("store#Get chunks error %s\n", err.Error())
-				switch err {
-				case memcache.ErrCacheMiss:
-					return nil, ErrNotFound
-				default:
+				if err != memcache.ErrCacheMiss {
 					return nil, ErrOpFailed
 				}
 			}

@@ -5,7 +5,7 @@ import (
 )
 
 type clientI interface {
-	Add(item *memcache.Item) error
+	Set(item *memcache.Item) error
 	Get(key string) (item *memcache.Item, err error)
 	GetMulti(keys []string) (map[string]*memcache.Item, error)
 	Delete(key string) error
@@ -14,10 +14,7 @@ type clientI interface {
 
 type mockclient map[string]*memcache.Item
 
-func (m mockclient) Add(item *memcache.Item) error {
-	if _, ok := m[item.Key]; ok {
-		return memcache.ErrNotStored
-	}
+func (m mockclient) Set(item *memcache.Item) error {
 	m[item.Key] = item
 	return nil
 }

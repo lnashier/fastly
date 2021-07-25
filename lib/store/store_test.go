@@ -27,9 +27,10 @@ func TestPut(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, "559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd", k)
 
+	// Allow overwrites
 	k, err = m.Put([]byte("A"))
-	assert.Equal(t, ErrNotStored, err)
-	assert.Equal(t, "", k)
+	assert.Nil(t, err)
+	assert.Equal(t, "559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd", k)
 }
 
 func TestGet(t *testing.T) {

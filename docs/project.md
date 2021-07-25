@@ -23,6 +23,8 @@ and retrieve the objects.
 - Library will not set expiration time means the stored items have no expiration time.
 - Library will not store 0 size content.
 - Library will not compress content.
+- Library will keep most recent stored content.
+- Library allows resetting in order to naturally fixing of partially evicted content.
 
 ## Deliverables
 
@@ -43,11 +45,11 @@ There are two deliverables for this project:
     - Library should key the chunks in any way appropriate.
 - [x] Library must retrieve a file's chunks from Memcached and return a single stream of bytes.
 - [x] Library must check for file consistency to ensure the data retrieved is the same as the original data stored.
-- [x] Library must handle edge cases appropriately by raising an Exception or similar when:
-    - [x] Storing a file that already exists.
+- [x] Library must handle edge cases appropriately by raising an exception or similar when:
     - [x] Trying to retrieve a file that does not exist.
     - [x] A file retrieved is inconsistent/corrupt.
-- [ ] Memcached can evict keys when it runs out of memory. Library should detect these cases and handle them appropriately.
+    - [ ] Storing a file that already exists.
+- [x] Memcached can evict keys when it runs out of memory. Library should detect these cases and handle them appropriately.
 - [x] Library must have at least one test.
 
 ### API
