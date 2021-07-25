@@ -19,9 +19,9 @@ and retrieve the objects.
 #### Assumptions / Trade-Offs
 
 - App is single purpose. It will support the following functions:
-  - Store the objects
-  - Retrieve the objects by key
-  - Delete the objects by key (optional)
+    - Store the objects
+    - Retrieve the objects by key
+    - Delete the objects by key (optional)
 - App will use memcached with default settings.
 - App will not implement authentication and authorization.
 - App will log to stdout.
@@ -29,9 +29,9 @@ and retrieve the objects.
 - Library will remain agnostic to data-type of payload.
     - Library takes slice/array of bytes and returns slice/array of bytes.
 - Library will not set expiration time means the stored items have no expiration time.
-- Library will perform sanity checks as specified in the requirements:
-    - Payload size limit (0 - 50 MB]
-    - Data consistency
+- Library will not store 0 size content.
+- Library will not compress content.
+- Memcache will have a single instance.
 
 ## Deliverables
 
@@ -46,15 +46,16 @@ There are two deliverables for this project:
 
 - [x] Library should be small and self-contained.
 - [x] Library should utilize a Memcached client, as well as any other libraries required.
-- [ ] Library must accept any file size from 0 to 50 MB. It must reject files larger than 50 MB.
-- [ ] Library must accept a file, chunk it, and store as bytes in Memcached with a minimum amount of overhead.
-- [ ] Library must retrieve a file's chunks from Memcached and return a single stream of bytes.
-- [ ] Library should chunk the file in any way appropriate.
-- [ ] Library should key the chunks in any way appropriate.
-- [ ] Library must check for file consistency to ensure the data retrieved is the same as the original data stored.
-- [ ] Library must handle edge cases appropriately by raising an Exception or similar. Some examples of edge cases may
-  include storing a file that already exists, trying to retrieve a file that does not exist, or when a file retrieved is
-  inconsistent/corrupt.
+- [x] Library must accept any file size from 0 to 50 MB. It must reject files larger than 50 MB.
+- [x] Library must accept a file, chunk it, and store as bytes in Memcached with a minimum amount of overhead.
+    - Library should chunk the file in any way appropriate.
+    - Library should key the chunks in any way appropriate.
+- [x] Library must retrieve a file's chunks from Memcached and return a single stream of bytes.
+- [x] Library must check for file consistency to ensure the data retrieved is the same as the original data stored.
+- [x] Library must handle edge cases appropriately by raising an Exception or similar when:
+    - [x] Storing a file that already exists.
+    - [x] Trying to retrieve a file that does not exist.
+    - [x] A file retrieved is inconsistent/corrupt.
 - [x] Library must have at least one test.
 
 ### API
@@ -64,7 +65,7 @@ There are two deliverables for this project:
   convenient to return an identifier used for retrieval at a later time.
 - [x] Application must accept a GET request with a file name/identifier and retrieve it using the library. The file
   contents must be returned to the caller in the response.
-- [ ] Application should appropriately handle edge cases (return an error response)
-    - [x] When a key does not exist.
-    - [ ] Content is not consistent.
+- [x] Application should appropriately handle edge cases (return an error response) when:
+    - [x] A key does not exist.
+    - [x] Content is not consistent.
 - [ ] Application must have at least one test.

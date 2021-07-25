@@ -1,4 +1,4 @@
-package memcached
+package store
 
 // Option configures how we set up the client.
 type Option interface {

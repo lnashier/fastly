@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"github.com/fastly/lib/store"
 	"github.com/spf13/viper"
 	"net/http"
 	"time"
@@ -50,6 +51,12 @@ func New(cfg *viper.Viper) *Server {
 			Handler: (&mux{
 				Router: gmux.NewRouter(),
 				cfg:    cfg,
+				/*
+					st: store.New(store.WithStoreAddresses(
+						cfg.GetStringSlice("store.addresses"),
+					)),
+				*/
+				st: store.Mock(),
 			}).init(),
 		},
 		cfg: cfg,

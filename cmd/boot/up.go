@@ -33,7 +33,7 @@ func Up(cfg *viper.Viper) {
 				fmt.Printf("boot@Up signal (%v) received\n", sig.String())
 				break Loop
 			default:
-				fmt.Printf("boot@Up signal (%v) ignored\n", sig.String())
+				//fmt.Printf("boot@Up signal (%v) ignored\n", sig.String())
 			}
 		}
 		fmt.Println("boot@Up stopping server")

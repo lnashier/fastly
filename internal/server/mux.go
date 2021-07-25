@@ -2,7 +2,7 @@ package server
 
 import (
 	"fmt"
-	"github.com/fastly/pkg/store"
+	"github.com/fastly/lib/store"
 	gmux "github.com/gorilla/mux"
 	"github.com/spf13/viper"
 	"io/ioutil"
@@ -13,6 +13,7 @@ import (
 type mux struct {
 	*gmux.Router
 	cfg *viper.Viper
+	st  store.Store
 }
 
 // init is to configure mux
@@ -20,36 +21,27 @@ func (m *mux) init() *mux {
 	fmt.Println("mux@init enter")
 	defer fmt.Println("mux@init exit")
 
-	st := store.Mock()
-	/*
-		st := memcached.New(memcached.WithStoreAddresses(
-			m.cfg.GetStringSlice("store.addresses"),
-		))
-	*/
-
-	fmt.Printf("mux@init store addresses %v\n", m.cfg.GetStringSlice("store.addresses"))
-
 	m.Methods(http.MethodPost).Path("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		payload, err := ioutil.ReadAll(r.Body)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-
-		fmt.Printf("Post Payload %v\n", string(payload))
-
-		key, err := st.Put(payload)
+		key, err := m.st.Put(payload)
 		if err != nil {
+			fmt.Printf("mux@post error %s\n", err.Error())
 			// we could return better status based of error type
 			w.WriteHeader(http.StatusInternalServerError)
+			// we could return status message too
 			return
 		}
 
-		fmt.Printf("Key %v\n", key)
+		fmt.Printf("Post Key %v\n", key)
 
 		w.Header().Set("Content-Type", "plain/text; charset=UTF-8")
 		w.WriteHeader(http.StatusOK)
-		// we could send json object as response if more details need to be shared
+		// we could send some serialized object in the response
+		// if more details need to be shared
 		_, _ = w.Write([]byte(key))
 	})
 	m.Methods(http.MethodGet).Path("/{key}").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -57,19 +49,20 @@ func (m *mux) init() *mux {
 		key, ok := vars["key"]
 		if !ok {
 			w.WriteHeader(http.StatusBadRequest)
+			// we could return status message too
 			return
 		}
 
 		fmt.Printf("Get Key %v\n", key)
 
-		payload, err := st.Get(key)
+		payload, err := m.st.Get(key)
 		if err != nil {
+			fmt.Printf("mux@get error %s\n", err.Error())
 			// we could return better status based of error type
 			w.WriteHeader(http.StatusInternalServerError)
+			// we could return status message too
 			return
 		}
-
-		fmt.Printf("Payload %v\n", string(payload))
 
 		w.Header().Set("Content-Type", "application/octet-stream")
 		w.WriteHeader(http.StatusOK)
@@ -86,9 +79,11 @@ func (m *mux) init() *mux {
 
 		fmt.Printf("Delete Key %v\n", key)
 
-		if err := st.Delete(key); err != nil {
+		if err := m.st.Delete(key); err != nil {
+			fmt.Printf("mux@delete error %s\n", err.Error())
 			// we could return better status based of error type
 			w.WriteHeader(http.StatusNotFound)
+			// we could return status message too
 			return
 		}
 		w.WriteHeader(http.StatusOK)
