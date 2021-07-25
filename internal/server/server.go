@@ -4,11 +4,10 @@ import (
 	"context"
 	"fmt"
 	"github.com/fastly/lib/store"
+	gmux "github.com/gorilla/mux"
 	"github.com/spf13/viper"
 	"net/http"
 	"time"
-
-	gmux "github.com/gorilla/mux"
 )
 
 // Server serves the clients
@@ -47,16 +46,13 @@ func New(cfg *viper.Viper) *Server {
 
 	return &Server{
 		Server: &http.Server{
-			Addr: ":8080",
+			Addr: ":" + cfg.GetString("server.app.port"),
 			Handler: (&mux{
 				Router: gmux.NewRouter(),
 				cfg:    cfg,
-				/*
-					st: store.New(store.WithStoreAddresses(
-						cfg.GetStringSlice("store.addresses"),
-					)),
-				*/
-				st: store.Mock(),
+				st: store.New(store.WithStoreAddresses(
+					cfg.GetStringSlice("store.addresses"),
+				)),
 			}).init(),
 		},
 		cfg: cfg,

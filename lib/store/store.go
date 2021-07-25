@@ -43,4 +43,6 @@ type Store interface {
 	Get(key string) ([]byte, error)
 	// Delete evicts the object from the store
 	Delete(key string) error
+	// Health tells if store is live and healthy
+	Health() bool
 }

@@ -28,6 +28,13 @@ type memclient struct {
 	opts options
 }
 
+func (m memclient) Health() bool {
+	if err := m.c.Ping(); err != nil {
+		return false
+	}
+	return true
+}
+
 func (m memclient) start() Store {
 	// connect to memcache server
 	m.c = memcache.New(m.opts.storeAddresses...)
@@ -116,7 +123,7 @@ func (m memclient) Delete(k string) error {
 				if i == 0 {
 					return err
 				}
-				// otherwis all possible chunks are deleted for this key
+				// otherwise all possible chunks are deleted for this key
 				return nil
 			}
 			// something bad happened

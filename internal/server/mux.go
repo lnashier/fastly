@@ -21,18 +21,31 @@ func (m *mux) init() *mux {
 	fmt.Println("mux@init enter")
 	defer fmt.Println("mux@init exit")
 
+	m.Methods(http.MethodGet).Path("/readiness").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if ok := m.st.Health(); ok {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		w.WriteHeader(http.StatusFailedDependency)
+	})
+
 	m.Methods(http.MethodPost).Path("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		payload, err := ioutil.ReadAll(r.Body)
 		if err != nil {
+			// we could return a status message too
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 		key, err := m.st.Put(payload)
 		if err != nil {
 			fmt.Printf("mux@post error %s\n", err.Error())
-			// we could return better status based of error type
-			w.WriteHeader(http.StatusInternalServerError)
-			// we could return status message too
+			switch err {
+			case store.ErrTooSmall, store.ErrTooLarge:
+				w.WriteHeader(http.StatusBadRequest)
+			default:
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+			// we could return a status message too
 			return
 		}
 
@@ -44,12 +57,13 @@ func (m *mux) init() *mux {
 		// if more details need to be shared
 		_, _ = w.Write([]byte(key))
 	})
+
 	m.Methods(http.MethodGet).Path("/{key}").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		vars := gmux.Vars(r)
 		key, ok := vars["key"]
 		if !ok {
 			w.WriteHeader(http.StatusBadRequest)
-			// we could return status message too
+			// we could return a status message too
 			return
 		}
 
@@ -58,9 +72,17 @@ func (m *mux) init() *mux {
 		payload, err := m.st.Get(key)
 		if err != nil {
 			fmt.Printf("mux@get error %s\n", err.Error())
-			// we could return better status based of error type
-			w.WriteHeader(http.StatusInternalServerError)
-			// we could return status message too
+			switch err {
+			case store.ErrBadKey:
+				w.WriteHeader(http.StatusBadRequest)
+			case store.ErrCorruptedContent:
+				// Let's not surface internal issues
+				// we would monitor ErrCorruptedContent
+				w.WriteHeader(http.StatusNotFound)
+			default:
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+			// we could return a status message too
 			return
 		}
 
@@ -81,9 +103,13 @@ func (m *mux) init() *mux {
 
 		if err := m.st.Delete(key); err != nil {
 			fmt.Printf("mux@delete error %s\n", err.Error())
-			// we could return better status based of error type
-			w.WriteHeader(http.StatusNotFound)
-			// we could return status message too
+			switch err {
+			case store.ErrBadKey:
+				w.WriteHeader(http.StatusBadRequest)
+			default:
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+			// we could return a status message too
 			return
 		}
 		w.WriteHeader(http.StatusOK)

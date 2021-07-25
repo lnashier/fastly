@@ -13,6 +13,10 @@ func Mock() Store {
 
 type mockstore map[string][]byte
 
+func (m mockstore) Health() bool {
+	return true
+}
+
 func (m mockstore) Put(payload []byte) (string, error) {
 	loadSize := binary.Size(payload)
 	fmt.Printf("Payload size %d\n", loadSize)

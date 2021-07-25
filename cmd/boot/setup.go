@@ -8,9 +8,9 @@ import (
 
 // Setup provides app config
 func Setup() (*viper.Viper, error) {
-	env := "local"
-	if psEnv, ok := os.LookupEnv("ENV"); ok {
-		env = psEnv
+	env, ok := os.LookupEnv("ENV")
+	if !ok || len(env) < 1 {
+		env = "local"
 	}
 	cfg := viper.New()
 	cfg.AddConfigPath("configs/envs/" + env)
@@ -18,10 +18,5 @@ func Setup() (*viper.Viper, error) {
 	if err := cfg.ReadInConfig(); err != nil {
 		return nil, errors.Wrapf(err, "Failed to load config")
 	}
-	lookupEnv(cfg)
 	return cfg, nil
-}
-
-func lookupEnv(cfg *viper.Viper) {
-	_ = cfg.BindEnv("server.port", "HTTP_PORT")
 }
