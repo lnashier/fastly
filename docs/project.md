@@ -7,31 +7,22 @@ build a library that will accept a file (somewhere between 0 and 50 MB) as an in
 library must also be able to retrieve the file from Memcached and return it. HTTP API will utilize the library to store
 and retrieve the objects.
 
-#### Notes
-
-- Using the default slab size, Memcached can only store up to 1 MB per key. That means we'll have to implement some
-  means of chunking the file to store it in Memcached.
-    - In memcached 1.4.2 and higher, the maximum supported object size can be configured by using the -I command-line
-      option. For example, to increase the maximum object size to 5 MB: `$ memcached -I 5m`
-- Additionally, Memcached can evict keys when it runs out of memory. A complete solution should detect these cases and
-  handle them appropriately.
-
-#### Assumptions / Trade-Offs
+#### Assumptions / Trade-Offs / Limitations
 
 - App is single purpose. It will support the following functions:
-    - Store the objects
-    - Retrieve the objects by key
-    - Delete the objects by key (optional)
-- App will use memcached with default settings.
+    - Store the object
+    - Retrieve the object by key
+    - Delete the object by key (optional)
+- App will use single memcached instance with default settings.
+  - In memcached 1.4.2 and higher, the maximum supported object size can be configured by using the -I command-line option. For example, to increase the maximum object size to 5 MB: `$ memcached -I 5m`
 - App will not implement authentication and authorization.
-- App will log to stdout.
+- Logs will be sent to stdout.
 - Library will not type-cast objects.
 - Library will remain agnostic to data-type of payload.
     - Library takes slice/array of bytes and returns slice/array of bytes.
 - Library will not set expiration time means the stored items have no expiration time.
 - Library will not store 0 size content.
 - Library will not compress content.
-- Memcache will have a single instance.
 
 ## Deliverables
 
@@ -47,7 +38,7 @@ There are two deliverables for this project:
 - [x] Library should be small and self-contained.
 - [x] Library should utilize a Memcached client, as well as any other libraries required.
 - [x] Library must accept any file size from 0 to 50 MB. It must reject files larger than 50 MB.
-- [x] Library must accept a file, chunk it, and store as bytes in Memcached with a minimum amount of overhead.
+- [x] Using the default slab size, Memcached can only store up to 1 MB per key. Library must accept a file, chunk it, and store as bytes in Memcached with a minimum amount of overhead.
     - Library should chunk the file in any way appropriate.
     - Library should key the chunks in any way appropriate.
 - [x] Library must retrieve a file's chunks from Memcached and return a single stream of bytes.
@@ -56,6 +47,7 @@ There are two deliverables for this project:
     - [x] Storing a file that already exists.
     - [x] Trying to retrieve a file that does not exist.
     - [x] A file retrieved is inconsistent/corrupt.
+- [ ] Memcached can evict keys when it runs out of memory. Library should detect these cases and handle them appropriately.
 - [x] Library must have at least one test.
 
 ### API
