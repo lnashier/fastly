@@ -31,6 +31,9 @@ var (
 
 	// ErrCorruptedContent means that content got corrupted
 	ErrCorruptedContent = errors.New("store: content corrupted")
+
+	// ErrNoContent means that key does not exist
+	ErrNoContent = errors.New("store: no content")
 )
 
 // Store defines functions to perform on the store

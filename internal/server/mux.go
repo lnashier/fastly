@@ -23,18 +23,22 @@ func (m *mux) init() *mux {
 
 	m.Methods(http.MethodGet).Path("/readiness").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if ok := m.st.Health(); ok {
-			w.WriteHeader(http.StatusNoContent)
+			w.WriteHeader(http.StatusOK)
 			return
 		}
 		w.WriteHeader(http.StatusFailedDependency)
 	})
 
 	m.Methods(http.MethodPost).Path("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		payload, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			// we could return a status message too
-			w.WriteHeader(http.StatusBadRequest)
-			return
+		var payload []byte
+		if r.Body != nil {
+			var err error
+			payload, err = ioutil.ReadAll(r.Body)
+			if err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+				// we could return a status message too
+				return
+			}
 		}
 		key, err := m.st.Put(payload)
 		if err != nil {
@@ -96,6 +100,7 @@ func (m *mux) init() *mux {
 		key, ok := vars["key"]
 		if !ok {
 			w.WriteHeader(http.StatusBadRequest)
+			// we could return a status message too
 			return
 		}
 
