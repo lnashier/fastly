@@ -68,4 +68,4 @@ There are two deliverables for this project:
 - [x] Application should appropriately handle edge cases (return an error response) when:
     - [x] A key does not exist.
     - [x] Content is not consistent.
-- [ ] Application must have at least one test.
+- [x] Application must have at least one test.

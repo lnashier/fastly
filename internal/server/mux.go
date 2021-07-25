@@ -13,7 +13,7 @@ import (
 type mux struct {
 	*gmux.Router
 	cfg *viper.Viper
-	st  store.Store
+	st  *store.Store
 }
 
 // init is to configure mux
@@ -44,7 +44,7 @@ func (m *mux) init() *mux {
 		if err != nil {
 			fmt.Printf("mux@post error %s\n", err.Error())
 			switch err {
-			case store.ErrTooSmall, store.ErrTooLarge:
+			case store.ErrTooSmall, store.ErrTooLarge, store.ErrNotStored:
 				w.WriteHeader(http.StatusBadRequest)
 			default:
 				w.WriteHeader(http.StatusInternalServerError)
@@ -79,9 +79,8 @@ func (m *mux) init() *mux {
 			switch err {
 			case store.ErrBadKey:
 				w.WriteHeader(http.StatusBadRequest)
-			case store.ErrCorruptedContent:
-				// Let's not surface internal issues
-				// we would monitor ErrCorruptedContent
+			case store.ErrCorruptedContent, store.ErrNotFound:
+				// we should monitor ErrCorruptedContent
 				w.WriteHeader(http.StatusNotFound)
 			default:
 				w.WriteHeader(http.StatusInternalServerError)
@@ -111,13 +110,15 @@ func (m *mux) init() *mux {
 			switch err {
 			case store.ErrBadKey:
 				w.WriteHeader(http.StatusBadRequest)
+			case store.ErrNotFound:
+				w.WriteHeader(http.StatusNotFound)
 			default:
 				w.WriteHeader(http.StatusInternalServerError)
 			}
 			// we could return a status message too
 			return
 		}
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusNoContent)
 	})
 
 	return m

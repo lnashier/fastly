@@ -1,52 +1,55 @@
 package store
 
 import (
-	"encoding/binary"
-	"errors"
-	"fmt"
+	"github.com/bradfitz/gomemcache/memcache"
 )
 
-// Mock to get an instance of mock Store
-func Mock() Store {
-	return make(mockstore)
+type clientI interface {
+	Add(item *memcache.Item) error
+	Get(key string) (item *memcache.Item, err error)
+	GetMulti(keys []string) (map[string]*memcache.Item, error)
+	Delete(key string) error
+	Ping() error
 }
 
-type mockstore map[string][]byte
+type mockclient map[string]*memcache.Item
 
-func (m mockstore) Health() bool {
-	return true
+func (m mockclient) Add(item *memcache.Item) error {
+	if _, ok := m[item.Key]; ok {
+		return memcache.ErrNotStored
+	}
+	m[item.Key] = item
+	return nil
 }
 
-func (m mockstore) Put(payload []byte) (string, error) {
-	loadSize := binary.Size(payload)
-	fmt.Printf("Payload size %d\n", loadSize)
-	if loadSize <= 0 {
-		return "", ErrTooSmall
-	}
-	if loadSize > MaxPayloadSize {
-		return "", ErrTooLarge
-	}
-	k := createKey(payload)
-	if _, ok := m[k]; ok {
-		return "", errors.New("mock: item not stored")
-	}
-	m[k] = payload
-	return k, nil
-}
-
-func (m mockstore) Get(k string) ([]byte, error) {
-	payload, ok := m[k]
+func (m mockclient) Get(k string) (item *memcache.Item, err error) {
+	item, ok := m[k]
 	if !ok {
-		return nil, errors.New("mock: cache miss")
+		return nil, memcache.ErrCacheMiss
 	}
-	fmt.Printf("Payload size %d\n", binary.Size(payload))
-	return payload, nil
+	return item, nil
 }
 
-func (m mockstore) Delete(k string) error {
+func (m mockclient) GetMulti(keys []string) (map[string]*memcache.Item, error) {
+	items := make(map[string]*memcache.Item)
+	for _, k := range keys {
+		item, err := m.Get(k)
+		if err != nil {
+			return nil, err
+		}
+		items[k] = item
+	}
+	return items, nil
+}
+
+func (m mockclient) Delete(k string) error {
 	if _, ok := m[k]; !ok {
-		return errors.New("mock: cache miss")
+		return memcache.ErrCacheMiss
 	}
 	delete(m, k)
+	return nil
+}
+
+func (m mockclient) Ping() error {
 	return nil
 }

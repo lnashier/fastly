@@ -7,7 +7,7 @@ import (
 )
 
 func TestPut(t *testing.T) {
-	m := &memclient{}
+	m := Mock()
 
 	// Payload too small
 	k, err := m.Put([]byte{})
@@ -22,10 +22,18 @@ func TestPut(t *testing.T) {
 	k, err = m.Put(payload)
 	assert.Equal(t, ErrTooLarge, err)
 	assert.Equal(t, "", k)
+
+	k, err = m.Put([]byte("A"))
+	assert.Nil(t, err)
+	assert.Equal(t, "559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd", k)
+
+	k, err = m.Put([]byte("A"))
+	assert.Equal(t, ErrNotStored, err)
+	assert.Equal(t, "", k)
 }
 
 func TestGet(t *testing.T) {
-	m := &memclient{}
+	m := Mock()
 
 	// Empty key
 	payload, err := m.Get("")
@@ -41,10 +49,34 @@ func TestGet(t *testing.T) {
 	payload, err = m.Get("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.0")
 	assert.Equal(t, ErrBadKey, err)
 	assert.Nil(t, payload)
+
+	// Malformed key
+	payload, err = m.Get("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")
+	assert.Equal(t, ErrNotFound, err)
+	assert.Nil(t, payload)
+
+	// Simple object
+	payload0 := []byte("A")
+	k, _ := m.Put(payload0)
+	payload, err = m.Get(k)
+	assert.Nil(t, err)
+	assert.Equal(t, payload0, payload)
+
+	// Max object
+	payload0 = []byte{}
+	for i := 0; i < MaxPayloadSize; i++ {
+		payload0 = append(payload0, fmt.Sprintf("%d", (i%10))...)
+	}
+	k, err = m.Put(payload0)
+	assert.Nil(t, err)
+	assert.NotNil(t, k)
+	payload, err = m.Get(k)
+	assert.Nil(t, err)
+	assert.Equal(t, payload0, payload)
 }
 
 func TestDelete(t *testing.T) {
-	m := &memclient{}
+	m := Mock()
 
 	// Empty key
 	err := m.Delete("")
@@ -57,4 +89,22 @@ func TestDelete(t *testing.T) {
 	// Malformed key
 	err = m.Delete("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.0")
 	assert.Equal(t, ErrBadKey, err)
+
+	// Simple object
+	k, _ := m.Put([]byte("A"))
+	err = m.Delete(k)
+	assert.Nil(t, err)
+	_, err = m.Get(k)
+	assert.Equal(t, ErrNotFound, err)
+
+	// Max object
+	payload0 := []byte{}
+	for i := 0; i < MaxPayloadSize; i++ {
+		payload0 = append(payload0, fmt.Sprintf("%d", (i%10))...)
+	}
+	k, _ = m.Put(payload0)
+	err = m.Delete(k)
+	assert.Nil(t, err)
+	_, err = m.Get(k)
+	assert.Equal(t, ErrNotFound, err)
 }

@@ -83,9 +83,13 @@ func TestMux(t *testing.T) {
 	request, _ = http.NewRequest(http.MethodGet, "/a", nil)
 	response = httptest.NewRecorder()
 	m.ServeHTTP(response, request)
+	assert.Equal(t, http.StatusBadRequest, response.Code)
+
+	request, _ = http.NewRequest(http.MethodGet, "/959aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdfff", nil)
+	response = httptest.NewRecorder()
+	m.ServeHTTP(response, request)
 	assert.Equal(t, http.StatusNotFound, response.Code)
 
-	/*
 	request, _ = http.NewRequest(http.MethodGet, "/559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd.0", nil)
 	response = httptest.NewRecorder()
 	m.ServeHTTP(response, request)
@@ -94,7 +98,31 @@ func TestMux(t *testing.T) {
 	request, _ = http.NewRequest(http.MethodGet, "/559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd", nil)
 	response = httptest.NewRecorder()
 	m.ServeHTTP(response, request)
+	assert.Equal(t, http.StatusOK, response.Code)
+	assert.Equal(t, []byte("A"), response.Body.Bytes())
+
+	request, _ = http.NewRequest(http.MethodDelete, "/", nil)
+	response = httptest.NewRecorder()
+	m.ServeHTTP(response, request)
+	assert.Equal(t, http.StatusMethodNotAllowed, response.Code)
+
+	request, _ = http.NewRequest(http.MethodDelete, "/a", nil)
+	response = httptest.NewRecorder()
+	m.ServeHTTP(response, request)
 	assert.Equal(t, http.StatusBadRequest, response.Code)
 
-	 */
+	request, _ = http.NewRequest(http.MethodDelete, "/559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd.0", nil)
+	response = httptest.NewRecorder()
+	m.ServeHTTP(response, request)
+	assert.Equal(t, http.StatusBadRequest, response.Code)
+
+	request, _ = http.NewRequest(http.MethodDelete, "/559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd", nil)
+	response = httptest.NewRecorder()
+	m.ServeHTTP(response, request)
+	assert.Equal(t, http.StatusNoContent, response.Code)
+
+	request, _ = http.NewRequest(http.MethodGet, "/559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd", nil)
+	response = httptest.NewRecorder()
+	m.ServeHTTP(response, request)
+	assert.Equal(t, http.StatusNotFound, response.Code)
 }
