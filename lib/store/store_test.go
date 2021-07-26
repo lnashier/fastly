@@ -11,8 +11,8 @@ func TestPut(t *testing.T) {
 
 	// Payload too small
 	k, err := m.Put([]byte{})
-	assert.Nil(t, err)
-	assert.Equal(t, "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", k)
+	assert.Equal(t, ErrTooSmall, err)
+	assert.Equal(t, "", k)
 
 	// Payload too large
 	var payload []byte

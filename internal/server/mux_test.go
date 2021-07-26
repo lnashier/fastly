@@ -57,8 +57,7 @@ func TestMux(t *testing.T) {
 	request, _ = http.NewRequest(http.MethodPost, "/", nil)
 	response = httptest.NewRecorder()
 	m.ServeHTTP(response, request)
-	assert.Equal(t, http.StatusOK, response.Code)
-	assert.Equal(t, "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", string(response.Body.Bytes()))
+	assert.Equal(t, http.StatusBadRequest, response.Code)
 
 	request, _ = http.NewRequest(http.MethodPost, "/", strings.NewReader("A"))
 	request.Header.Set("Content-Type", " application/x-www-form-urlencoded")
@@ -69,8 +68,7 @@ func TestMux(t *testing.T) {
 	request, _ = http.NewRequest(http.MethodPost, "/", strings.NewReader(""))
 	response = httptest.NewRecorder()
 	m.ServeHTTP(response, request)
-	assert.Equal(t, http.StatusOK, response.Code)
-	assert.Equal(t, "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", string(response.Body.Bytes()))
+	assert.Equal(t, http.StatusBadRequest, response.Code)
 
 	request, _ = http.NewRequest(http.MethodPost, "/", strings.NewReader("A"))
 	response = httptest.NewRecorder()
