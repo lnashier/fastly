@@ -7,7 +7,7 @@ build a library that will accept a file (somewhere between 0 and 50 MB) as an in
 library must also be able to retrieve the file from Memcached and return it. HTTP API will utilize the library to store
 and retrieve the objects.
 
-#### Assumptions / Limitations
+#### Assumptions / Limitations / Future work
 
 - App will not allow user custom keys.
 - App will support the following content types:
@@ -29,6 +29,7 @@ and retrieve the objects.
 - Library will not set expiration time that means the stored items have no expiration time.
 - Library will not compress content.
 - Library will keep most recent stored content.
+- Library will not retry on failure.
 - Library allows resetting in order to naturally fixing of partially evicted content.
 
 ## Deliverables

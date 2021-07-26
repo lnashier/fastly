@@ -2,7 +2,7 @@ package boot
 
 import (
 	"fmt"
-	"github.com/fastly/internal/server"
+	"github.com/fastly/server"
 	"github.com/spf13/viper"
 	"net/http"
 	"os"
@@ -19,7 +19,8 @@ func Up(cfg *viper.Viper) {
 	srv := server.New(cfg)
 
 	go func(srv *server.Server) {
-		// Logging: Info Level
+		fmt.Println("boot@Up signal enter")
+		defer fmt.Println("boot@Up signal exit")
 
 		sigc := make(chan os.Signal, 1)
 		signal.Notify(sigc)
