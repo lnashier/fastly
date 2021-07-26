@@ -1,0 +1,15 @@
+{
+  "server": {
+    "app": {
+      "port": 8080,
+      "shutdown": {
+        "gracetime": 1
+      }
+    }
+  },
+  "store": {
+    "addresses": [
+      "memcached:11211"
+    ]
+  }
+}
