@@ -10,6 +10,10 @@ import (
 )
 
 const (
+	// MinPayloadSize is minimum payload size allowed
+	// 1 byte
+	MinPayloadSize = 1
+
 	// MaxPayloadSize is maximum payload size allowed
 	// 50 mebibyte
 	MaxPayloadSize = 50 * 1024 * 1024
@@ -25,7 +29,7 @@ const (
 )
 
 var (
-	// ErrTooSmall means that item was too small <= 0
+	// ErrTooSmall means that item was too small < MinPayloadSize
 	ErrTooSmall = errors.New("store: item too small")
 
 	// ErrTooLarge means that item was too large > MaxPayloadSize
@@ -87,7 +91,7 @@ func (s Store) Put(payload []byte) (string, error) {
 
 	fmt.Printf("Payload size %d\n", loadSize)
 
-	if loadSize <= 0 {
+	if loadSize < MinPayloadSize {
 		return "", ErrTooSmall
 	}
 	if loadSize > MaxPayloadSize {

@@ -23,7 +23,7 @@ and retrieve the objects.
   - In memcached 1.4.2 and higher, the maximum supported object size can be configured by using the -I command-line option. For example, to increase the maximum object size to 5 MB: `$ memcached -I 5m`
 - App will not implement authentication and authorization.
 - App logs will be sent to stdout.
-- Library will not store 0 size content.
+- Library will allow storing 0 size content.
 - Library will not type-cast objects.
 - Library will remain agnostic to data-type of payload.
 - Library will not set expiration time that means the stored items have no expiration time.
