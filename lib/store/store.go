@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/pkg/errors"
-	"math"
 	"strings"
 )
 
@@ -177,7 +176,7 @@ func (s Store) Delete(k string) error {
 		return ErrBadKey
 	}
 
-	for i := 0; i <= int(math.Ceil(MaxPayloadSize/MaxValueSize)); i++ {
+	for i := 0; i <= MaxPayloadSize/MaxValueSize; i++ {
 		// Let's delete all the chunks for this key
 		if err := s.c.Delete(fmt.Sprintf("%s.%d", k, i)); err != nil {
 			fmt.Printf("store#Delete chunk %d error %s\n", i, err.Error())
