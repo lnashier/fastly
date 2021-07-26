@@ -38,11 +38,13 @@ func (m *mux) init() *mux {
 			contentType := r.Header.Get("Content-Type")
 			switch {
 			case strings.Contains(contentType, "multipart/form-data"):
+				// no need to load all parts
 				mr, err := r.MultipartReader()
 				if err != nil {
 					w.WriteHeader(http.StatusBadRequest)
 					return
 				}
+				// expecting one part
 				part, err := mr.NextPart()
 				if err != nil {
 					w.WriteHeader(http.StatusInternalServerError)
@@ -51,10 +53,12 @@ func (m *mux) init() *mux {
 				defer func() {
 					_ = part.Close()
 				}()
+				// if it is not a file
 				if len(part.FileName()) < 1 {
 					w.WriteHeader(http.StatusBadRequest)
 					return
 				}
+				// get the contents
 				payload, err = ioutil.ReadAll(part)
 				if err != nil {
 					w.WriteHeader(http.StatusInternalServerError)

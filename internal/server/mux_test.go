@@ -59,6 +59,12 @@ func TestMux(t *testing.T) {
 	m.ServeHTTP(response, request)
 	assert.Equal(t, http.StatusBadRequest, response.Code)
 
+	request, _ = http.NewRequest(http.MethodPost, "/", strings.NewReader("A"))
+	request.Header.Set("Content-Type", " application/x-www-form-urlencoded")
+	response = httptest.NewRecorder()
+	m.ServeHTTP(response, request)
+	assert.Equal(t, http.StatusUnsupportedMediaType, response.Code)
+
 	request, _ = http.NewRequest(http.MethodPost, "/", strings.NewReader(""))
 	response = httptest.NewRecorder()
 	m.ServeHTTP(response, request)
