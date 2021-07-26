@@ -9,14 +9,20 @@ and retrieve the objects.
 
 #### Assumptions / Trade-Offs / Limitations
 
-- App is single purpose. It will support the following functions:
+- App will not allow user custom keys.
+- App will support the following content types:
+  - plain/text
+  - application/octet-stream
+  - multipart/form-data
+    - App allows one file per request.
+- App will support the following functions:
     - Store the object
     - Retrieve the object by key
     - Delete the object by key (optional)
 - App will use single memcached instance with default settings.
   - In memcached 1.4.2 and higher, the maximum supported object size can be configured by using the -I command-line option. For example, to increase the maximum object size to 5 MB: `$ memcached -I 5m`
 - App will not implement authentication and authorization.
-- Logs will be sent to stdout.
+- App logs will be sent to stdout.
 - Library will not type-cast objects.
 - Library will remain agnostic to data-type of payload.
     - Library takes slice/array of bytes and returns slice/array of bytes.

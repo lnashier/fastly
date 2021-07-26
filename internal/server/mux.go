@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/viper"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 // mux matches incoming client request to a list of registered handlers
@@ -32,11 +33,43 @@ func (m *mux) init() *mux {
 	m.Methods(http.MethodPost).Path("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var payload []byte
 		if r.Body != nil {
-			var err error
-			payload, err = ioutil.ReadAll(r.Body)
-			if err != nil {
-				w.WriteHeader(http.StatusBadRequest)
-				// we could return a status message too
+			// if content is more than allowed
+			//r.Body = http.MaxBytesReader(w, r.Body, store.MaxPayloadSize+1024)
+			contentType := r.Header.Get("Content-Type")
+			switch {
+			case strings.Contains(contentType, "multipart/form-data"):
+				mr, err := r.MultipartReader()
+				if err != nil {
+					w.WriteHeader(http.StatusBadRequest)
+					return
+				}
+				part, err := mr.NextPart()
+				if err != nil {
+					w.WriteHeader(http.StatusInternalServerError)
+					return
+				}
+				defer func() {
+					_ = part.Close()
+				}()
+				if len(part.FileName()) < 1 {
+					w.WriteHeader(http.StatusBadRequest)
+					return
+				}
+				payload, err = ioutil.ReadAll(part)
+				if err != nil {
+					w.WriteHeader(http.StatusInternalServerError)
+					return
+				}
+			case contentType == "application/octet-stream", contentType == "", contentType == "text/plain":
+				var err error
+				payload, err = ioutil.ReadAll(r.Body)
+				if err != nil {
+					w.WriteHeader(http.StatusBadRequest)
+					// we could return a status message too
+					return
+				}
+			default:
+				w.WriteHeader(http.StatusUnsupportedMediaType)
 				return
 			}
 		}
