@@ -11,8 +11,8 @@ import (
 
 const (
 	// MinPayloadSize is minimum payload size allowed
-	// 1 byte
-	MinPayloadSize = 1
+	// 0 byte
+	MinPayloadSize = 0
 
 	// MaxPayloadSize is maximum payload size allowed
 	// 50 mebibyte
