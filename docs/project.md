@@ -14,7 +14,7 @@ and retrieve the objects.
   - plain/text
   - application/octet-stream
   - multipart/form-data
-    - App allows one file per request.
+    - App will allow one file per request.
 - App will support the following functions:
     - Store the object
     - Retrieve the object by key
@@ -23,11 +23,10 @@ and retrieve the objects.
   - In memcached 1.4.2 and higher, the maximum supported object size can be configured by using the -I command-line option. For example, to increase the maximum object size to 5 MB: `$ memcached -I 5m`
 - App will not implement authentication and authorization.
 - App logs will be sent to stdout.
+- Library will not store 0 size content.
 - Library will not type-cast objects.
 - Library will remain agnostic to data-type of payload.
-    - Library takes slice/array of bytes and returns slice/array of bytes.
-- Library will not set expiration time means the stored items have no expiration time.
-- Library will not store 0 size content.
+- Library will not set expiration time that means the stored items have no expiration time.
 - Library will not compress content.
 - Library will keep most recent stored content.
 - Library allows resetting in order to naturally fixing of partially evicted content.
