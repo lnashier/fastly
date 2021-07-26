@@ -7,7 +7,7 @@ build a library that will accept a file (somewhere between 0 and 50 MB) as an in
 library must also be able to retrieve the file from Memcached and return it. HTTP API will utilize the library to store
 and retrieve the objects.
 
-#### Assumptions / Trade-Offs / Limitations
+#### Assumptions / Limitations
 
 - App will not allow user custom keys.
 - App will support the following content types:
