@@ -42,14 +42,14 @@ docker run -d --net=fastnet --name=fastly -e ENV=docker -p 8080:8080 fastly:1.0.
 ### Post content
 
 ```shell
-curl POST 'http://localhost:8080/' \
+curl --request POST 'http://localhost:8080/' \
   --form 'myfile=@"/dummy.bin"'
 
-curl POST 'http://localhost:8080/' \
+curl --request POST 'http://localhost:8080/' \
   --header 'Content-Type: text/plain' \
   --data-raw 'Hello, World!'
   
-curl POST 'http://localhost:8080/' \
+curl --request POST 'http://localhost:8080/' \
   --header 'Content-Type: application/octet-stream' \
   --data-binary '@/dummy.bin'
 ```
