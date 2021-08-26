@@ -3,7 +3,7 @@ package server
 import (
 	"bytes"
 	"fmt"
-	"github.com/fastly/lib/store"
+	"github.com/lnashier/fastly/store"
 	gmux "github.com/gorilla/mux"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"

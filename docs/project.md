@@ -11,16 +11,17 @@ and retrieve the objects.
 
 - App will not allow user custom keys.
 - App will support the following content types:
-  - plain/text
-  - application/octet-stream
-  - multipart/form-data
-    - App will allow one file per request.
+    - plain/text
+    - application/octet-stream
+    - multipart/form-data
+        - App will allow one file per request.
 - App will support the following functions:
     - Store the object
     - Retrieve the object by key
     - Delete the object by key (optional)
 - App will use single memcached instance with default settings.
-  - In memcached 1.4.2 and higher, the maximum supported object size can be configured by using the -I command-line option. For example, to increase the maximum object size to 5 MB: `$ memcached -I 5m`
+    - In memcached 1.4.2 and higher, the maximum supported object size can be configured by using the -I command-line
+      option. For example, to increase the maximum object size to 5 MB: `$ memcached -I 5m`
 - App will not implement authentication and authorization.
 - App logs will be sent to stdout.
 - Library will reject 0 size content.
@@ -46,7 +47,8 @@ There are two deliverables for this project:
 - [x] Library should be small and self-contained.
 - [x] Library should utilize a Memcached client, as well as any other libraries required.
 - [x] Library must accept any file size from 0 to 50 MB. It must reject files larger than 50 MB.
-- [x] Using the default slab size, Memcached can only store up to 1 MB per key. Library must accept a file, chunk it, and store as bytes in Memcached with a minimum amount of overhead.
+- [x] Using the default slab size, Memcached can only store up to 1 MB per key. Library must accept a file, chunk it,
+  and store as bytes in Memcached with a minimum amount of overhead.
     - Library should chunk the file in any way appropriate.
     - Library should key the chunks in any way appropriate.
 - [x] Library must retrieve a file's chunks from Memcached and return a single stream of bytes.
@@ -55,7 +57,8 @@ There are two deliverables for this project:
     - [x] Trying to retrieve a file that does not exist.
     - [x] A file retrieved is inconsistent/corrupt.
     - [ ] Storing a file that already exists.
-- [x] Memcached can evict keys when it runs out of memory. Library should detect these cases and handle them appropriately.
+- [x] Memcached can evict keys when it runs out of memory. Library should detect these cases and handle them
+  appropriately.
 - [x] Library must have at least one test.
 
 ### API

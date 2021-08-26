@@ -2,8 +2,8 @@ package server
 
 import (
 	"fmt"
-	"github.com/fastly/lib/store"
 	gmux "github.com/gorilla/mux"
+	"github.com/lnashier/fastly/store"
 	"github.com/spf13/viper"
 	"io/ioutil"
 	"net/http"
@@ -25,9 +25,11 @@ func (m *mux) init() *mux {
 	m.Methods(http.MethodGet).Path("/readiness").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if ok := m.st.Health(); ok {
 			w.WriteHeader(http.StatusOK)
+			_, _ = w.Write([]byte("OK"))
 			return
 		}
 		w.WriteHeader(http.StatusFailedDependency)
+		_, _ = w.Write([]byte("FAIL"))
 	})
 
 	m.Methods(http.MethodPost).Path("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

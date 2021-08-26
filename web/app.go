@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/fastly/cmd/boot"
+	"github.com/lnashier/fastly/web/boot"
 	"github.com/spf13/viper"
 	"os"
 )

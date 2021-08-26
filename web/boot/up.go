@@ -2,7 +2,7 @@ package boot
 
 import (
 	"fmt"
-	"github.com/fastly/server"
+	"github.com/lnashier/fastly/web/server"
 	"github.com/spf13/viper"
 	"net/http"
 	"os"

@@ -31,6 +31,7 @@ docker network create fastnet
 docker pull memcached
 docker run -d --net=fastnet --name=memcached -p 11211:11211 memcached '-vv'
 ```
+
 ```shell
 cd $WORKSPACE/fastly
 make
