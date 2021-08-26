@@ -14,7 +14,7 @@ memcached -vv
 ```
 
 ```shell
-cd $WORKSPACE/fastly/cmd/web
+cd web
 CGO_ENABLED=0 go build -a -ldflags '-w -extldflags=-static' -o fastly
 ./fastly
 ```

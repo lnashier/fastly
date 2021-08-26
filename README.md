@@ -1,5 +1,5 @@
 # Fastly
 
-[Project Details](docs/project.md)
+[Project Details](project.md)
 
-[Project Setup](docs/setup.md)
+[Project Setup](setup.md)
