@@ -17,7 +17,7 @@ func TestPut(t *testing.T) {
 	// Payload too large
 	var payload []byte
 	for i := 0; i < MaxPayloadSize+1; i++ {
-		payload = append(payload, fmt.Sprintf("%d", (i%10))...)
+		payload = append(payload, fmt.Sprintf("%d", i%10)...)
 	}
 	k, err = m.Put(payload)
 	assert.Equal(t, ErrTooLarge, err)
@@ -66,7 +66,7 @@ func TestGet(t *testing.T) {
 	// Max object
 	payload0 = []byte{}
 	for i := 0; i < MaxPayloadSize; i++ {
-		payload0 = append(payload0, fmt.Sprintf("%d", (i%10))...)
+		payload0 = append(payload0, fmt.Sprintf("%d", i%10)...)
 	}
 	k, err = m.Put(payload0)
 	assert.Nil(t, err)
@@ -99,9 +99,9 @@ func TestDelete(t *testing.T) {
 	assert.Equal(t, ErrNotFound, err)
 
 	// Max object
-	payload0 := []byte{}
+	var payload0 []byte
 	for i := 0; i < MaxPayloadSize; i++ {
-		payload0 = append(payload0, fmt.Sprintf("%d", (i%10))...)
+		payload0 = append(payload0, fmt.Sprintf("%d", i%10)...)
 	}
 	k, _ = m.Put(payload0)
 	err = m.Delete(k)

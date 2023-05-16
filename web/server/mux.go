@@ -1,11 +1,11 @@
 package server
 
 import (
+	"fastly/store"
 	"fmt"
 	gmux "github.com/gorilla/mux"
-	"github.com/lnashier/fastly/store"
 	"github.com/spf13/viper"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 )
@@ -61,14 +61,14 @@ func (m *mux) init() *mux {
 					return
 				}
 				// get the contents
-				payload, err = ioutil.ReadAll(part)
+				payload, err = io.ReadAll(part)
 				if err != nil {
 					w.WriteHeader(http.StatusInternalServerError)
 					return
 				}
 			case contentType == "application/octet-stream", contentType == "", contentType == "text/plain":
 				var err error
-				payload, err = ioutil.ReadAll(r.Body)
+				payload, err = io.ReadAll(r.Body)
 				if err != nil {
 					w.WriteHeader(http.StatusBadRequest)
 					// we could return a status message too

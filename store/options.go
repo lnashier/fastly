@@ -5,7 +5,7 @@ type Option interface {
 	apply(*options)
 }
 
-// WithStoreAddress returns an Option which sets the store address
+// WithStoreAddresses returns an Option which sets the store address
 func WithStoreAddresses(addresses []string) Option {
 	return newFuncOption(func(o *options) {
 		o.storeAddresses = addresses

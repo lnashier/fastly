@@ -1,8 +1,8 @@
 package boot
 
 import (
+	"fastly/web/server"
 	"fmt"
-	"github.com/lnashier/fastly/web/server"
 	"github.com/spf13/viper"
 	"net/http"
 	"os"

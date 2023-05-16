@@ -2,9 +2,9 @@ package server
 
 import (
 	"context"
+	"fastly/store"
 	"fmt"
 	gmux "github.com/gorilla/mux"
-	"github.com/lnashier/fastly/store"
 	"github.com/spf13/viper"
 	"net/http"
 	"time"

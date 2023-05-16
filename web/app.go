@@ -1,8 +1,8 @@
 package main
 
 import (
+	"fastly/web/boot"
 	"fmt"
-	"github.com/lnashier/fastly/web/boot"
 	"github.com/spf13/viper"
 	"os"
 )

@@ -2,8 +2,8 @@ package server
 
 import (
 	"bytes"
+	"fastly/store"
 	"fmt"
-	"github.com/lnashier/fastly/store"
 	gmux "github.com/gorilla/mux"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
@@ -79,7 +79,7 @@ func TestMux(t *testing.T) {
 
 	var payload []byte
 	for i := 0; i < store.MaxPayloadSize+1; i++ {
-		payload = append(payload, fmt.Sprintf("%d", (i%10))...)
+		payload = append(payload, fmt.Sprintf("%d", i%10)...)
 	}
 	request, _ = http.NewRequest(http.MethodPost, "/", bytes.NewReader(payload))
 	response = httptest.NewRecorder()
