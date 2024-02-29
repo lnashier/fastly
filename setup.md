@@ -15,8 +15,8 @@ memcached -vv
 
 ```shell
 cd web
-CGO_ENABLED=0 go build -a -ldflags '-w -extldflags=-static' -o fastly
-./fastly
+CGO_ENABLED=0 go build -trimpath -a -ldflags '-s -w -extldflags=-static' -o ./bin/fastly
+./bin/fastly
 ```
 
 ### Docker
