@@ -19,7 +19,7 @@ func (m mockclient) Set(item *memcache.Item) error {
 	return nil
 }
 
-func (m mockclient) Get(k string) (item *memcache.Item, err error) {
+func (m mockclient) Get(k string) (*memcache.Item, error) {
 	item, ok := m[k]
 	if !ok {
 		return nil, memcache.ErrCacheMiss
